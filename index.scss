@@ -1,0 +1,354 @@
+@use "sass:math";
+
+@import url("https://rsms.me/inter/inter.css");
+
+$shade-0: #fff !default;
+$shade-1: #d7dcdf !default;
+$shade-10: #2c3e50 !default;
+$teal: #1abc9c !default;
+
+@mixin font-family {
+  font-family: "Inter", sans-serif;
+  @supports (font-variation-settings: normal) {
+    font-family: "Inter Var", sans-serif;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  background: #1b1b1b;
+  color: whitesmoke;
+
+  @include font-family();
+
+  height: 100%;
+
+  overflow: hidden;
+}
+
+.title {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke-width: 0.04em;
+  -webkit-text-stroke-color: whitesmoke;
+
+  position: absolute;
+  margin: 0.2em 0 0 0;
+  width: 100%;
+
+  text-align: center;
+  font-size: 4em;
+  text-transform: full-width;
+}
+
+.simulation-window {
+  height: 100%;
+  width: 100%;
+}
+
+.panel {
+  position: absolute;
+  bottom: 0;
+
+  margin: 0 5em;
+  padding: 5em 0 1em 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  opacity: 20%;
+  transition: opacity 500ms ease-in-out;
+
+  &:hover {
+    opacity: unset;
+  }
+
+  &__buttons {
+    margin-top: 1em;
+
+    & > * {
+      min-width: 10em;
+
+      &:not(:first-child) {
+        margin-left: 1em;
+      }
+    }
+  }
+}
+
+button {
+  color: $shade-0;
+  background: $shade-10;
+  padding: 0.5em 2em;
+
+  border: none;
+  border-radius: 1em;
+
+  @include font-family();
+
+  transition: background 100ms ease-in-out, transform 25ms ease-in;
+
+  &:hover {
+    background: $teal;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  & > * {
+    flex-basis: 30%;
+  }
+}
+
+$slider-label-fg-color: $shade-0 !default;
+$slider-label-bg-color: $shade-10 !default;
+$slider-label-width: 3.75em !default;
+
+// slider styles adapted from Styling Cross-Browser Compatible Range Inputs with Sass
+// by Darlan Rod.
+//
+// (adapted under MIT license)
+//
+// See: https://github.com/darlanrod/input-range-sass
+
+$slider-thumb-color: $shade-10 !default;
+$slider-thumb-color-hover: $teal !default;
+$slider-track-color: $shade-1 !default;
+
+$slider-thumb-radius: 0.75em !default;
+$slider-thumb-height: 1.5em !default;
+$slider-thumb-width: 1.5em !default;
+
+$slider-thumb-shadow-size: 0.25em !default;
+$slider-thumb-shadow-blur: 0.25em !default;
+$slider-thumb-shadow-color: rgba(0, 0, 0, 0.2) !default;
+
+$slider-thumb-border-width: 0 !default;
+$slider-thumb-border-color: #eceff1 !default;
+
+$slider-track-width: 100% !default;
+$slider-track-height: 0.5em !default;
+
+$slider-track-shadow-size: 0.0625em !default;
+$slider-track-shadow-blur: 0.0625em !default;
+$slider-track-shadow-color: rgba(0, 0, 0, 0.2) !default;
+
+$slider-track-border-width: 0 !default;
+$slider-track-border-color: #cfd8dc !default;
+
+$slider-track-radius: math.div($slider-track-height, 2) !default;
+$slider-track-contrast: 5% !default;
+
+$slider-ie-bottom-track-color: darken(
+  $slider-track-color,
+  $slider-track-contrast
+) !default;
+
+@mixin slider-shadow($shadow-size, $shadow-blur, $shadow-color) {
+  box-shadow: $shadow-size $shadow-size $shadow-blur $shadow-color,
+    0 0 $shadow-size lighten($shadow-color, 5%);
+}
+
+@mixin slider-track {
+  cursor: default;
+  height: $slider-track-height;
+  transition: all 0.1s ease;
+  width: $slider-track-width;
+}
+
+@mixin slider-thumb {
+  @include slider-shadow(
+    $slider-thumb-shadow-size,
+    $slider-thumb-shadow-blur,
+    $slider-thumb-shadow-color
+  );
+
+  transition: background 0.1s ease;
+
+  background: $slider-thumb-color;
+  &:hover {
+    background: $slider-thumb-color-hover;
+  }
+
+  border: $slider-thumb-border-width solid $slider-thumb-border-color;
+  border-radius: $slider-thumb-radius;
+
+  box-sizing: border-box;
+  cursor: default;
+
+  height: $slider-thumb-height;
+  width: $slider-thumb-width;
+}
+
+.slider {
+  width: 20em;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  &__label {
+    display: block;
+    flex: 0 0 100%;
+    width: 101%;
+  }
+
+  &__value {
+    flex: 1;
+
+    display: inline-block;
+    position: relative;
+
+    width: $slider-label-width;
+    padding: 0.3125em 0.625em;
+    margin-left: 0.5em;
+
+    line-height: 1.25em;
+    text-align: center;
+    border-radius: 0.1875em;
+
+    color: $slider-label-fg-color;
+    background: $slider-label-bg-color;
+
+    font-variant-numeric: tabular-nums;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0.5em;
+      left: -0.4375em;
+      width: 0;
+      height: 0;
+      border-top: 0.4375em solid transparent;
+      border-right: 0.4375em solid $slider-label-bg-color;
+      border-bottom: 0.4375em solid transparent;
+    }
+  }
+
+  &__input[type="range"] {
+    flex: 2;
+
+    -webkit-appearance: none;
+    appearance: none;
+
+    background: transparent;
+    margin: math.div($slider-thumb-height, 2) 0;
+    width: 10em; // we need a concrete width to avoid various browser bugs. This width will actually
+    // be overridden by flexbox.
+
+    &::-moz-focus-outer {
+      border: 0;
+    }
+
+    &:focus {
+      outline: 0;
+
+      &::-webkit-slider-runnable-track {
+        background: lighten($slider-track-color, $slider-track-contrast);
+      }
+
+      &::-ms-fill-lower {
+        background: $slider-track-color;
+      }
+
+      &::-ms-fill-upper {
+        background: lighten($slider-track-color, $slider-track-contrast);
+      }
+    }
+
+    &::-webkit-slider-runnable-track {
+      @include slider-track;
+      @include slider-shadow(
+        $slider-track-shadow-size,
+        $slider-track-shadow-blur,
+        $slider-track-shadow-color
+      );
+      background: $slider-track-color;
+      border: $slider-track-border-width solid $slider-track-border-color;
+      border-radius: $slider-track-radius;
+    }
+
+    &::-webkit-slider-thumb {
+      @include slider-thumb;
+      -webkit-appearance: none;
+      appearance: none;
+      margin-top: math.div(
+          (-$slider-track-border-width * 2 + $slider-track-height),
+          2
+        ) - math.div($slider-thumb-height, 2);
+    }
+
+    &::-moz-range-track {
+      @include slider-track;
+      @include slider-shadow(
+        $slider-track-shadow-size,
+        $slider-track-shadow-blur,
+        $slider-track-shadow-color
+      );
+      background: $slider-track-color;
+      border: $slider-track-border-width solid $slider-track-border-color;
+      border-radius: $slider-track-radius;
+      height: math.div($slider-track-height, 2);
+    }
+
+    &::-moz-range-thumb {
+      @include slider-thumb;
+    }
+
+    &::-moz-range-progress {
+      -webkit-box-sizing: content-box;
+      box-sizing: content-box;
+    }
+
+    &::-ms-track {
+      @include slider-track;
+      background: transparent;
+      border-color: transparent;
+      border-width: math.div($slider-thumb-height, 2) 0;
+      color: transparent;
+    }
+
+    &::-ms-fill-lower {
+      @include slider-shadow(
+        $slider-track-shadow-size,
+        $slider-track-shadow-blur,
+        $slider-track-shadow-color
+      );
+      background: $slider-ie-bottom-track-color;
+      border: $slider-track-border-width solid $slider-track-border-color;
+      border-radius: ($slider-track-radius * 2);
+      -webkit-box-sizing: content-box;
+      box-sizing: content-box;
+    }
+
+    &::-ms-fill-upper {
+      @include slider-shadow(
+        $slider-track-shadow-size,
+        $slider-track-shadow-blur,
+        $slider-track-shadow-color
+      );
+      background: $slider-track-color;
+      border: $slider-track-border-width solid $slider-track-border-color;
+      border-radius: ($slider-track-radius * 2);
+    }
+
+    &::-ms-thumb {
+      @include slider-thumb;
+      margin-top: math.div($slider-track-height, 4);
+    }
+  }
+}
